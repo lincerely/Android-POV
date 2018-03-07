@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">POV</string>
+
+    <string name="title_activity_display">Shake to see the POV effect!</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="clear">Clear</string>
+    <string name="about">About</string>
+    <string name="description">A simple persistent of vision display\ndeveloped by <b>Lincoln Li</b></string>
+    <string name="application_icon">Application Icon</string>
+    <string name="hint_framerate">You can change the frame rate with volume button while in display mode</string>
+    <string name="display">Display!</string>
+</resources>
