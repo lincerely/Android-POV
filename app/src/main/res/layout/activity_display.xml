@@ -2,11 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/panelBackground"
+    android:background="?attr/colorPrimary"
     tools:context="lincolnli2.scm.pov.DisplayActivity">
 
     <view
-        class="lincolnli2.scm.pov.DisplayPOV"
+        class="lincolnli2.scm.pov.DisplayPOVView"
         id="@+id/viewDisplay"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

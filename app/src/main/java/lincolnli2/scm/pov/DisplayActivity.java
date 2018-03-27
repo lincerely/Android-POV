@@ -1,37 +1,42 @@
 package lincolnli2.scm.pov;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
-import android.view.Window;
 import android.widget.Toast;
+
+import com.squareup.seismic.ShakeDetector;
 
 /**
  * The full screen display activity the show the POV view and get input to control framerate
  */
-public class DisplayActivity extends AppCompatActivity {
+public class DisplayActivity extends AppCompatActivity implements ShakeDetector.Listener {
 
+    private static long MAX_SESSION_DURATION = 2000;
     private long changeRate = 25;
-    private DisplayPOV pov;
+    private DisplayPOVView pov;
+    private long lastShake;
+    private long averageShake;
+    private long sumShakeDuration;
+    private long numShakeSessions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        pov = new DisplayPOV(this.getApplicationContext());
+        pov = new DisplayPOVView(this.getApplicationContext());
         Intent intent = getIntent();
         pov.SetPixels(intent.getIntArrayExtra(MainActivity.EXTRA_PIXELS));
 
         setContentView(pov);
         pov.updateChangeRate(changeRate);
+
+        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        ShakeDetector sd = new ShakeDetector(this);
+        sd.start(sensorManager);
     }
 
     @Override
@@ -59,12 +64,27 @@ public class DisplayActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void hearShake() {
+        Log.d("Shake Test", "hearShake");
+        long curTime = System.currentTimeMillis();
+        long diff = curTime - lastShake;
+        lastShake = curTime;
+
+        if (lastShake == 0 || diff >= MAX_SESSION_DURATION) {
+            return;
+        }
+
+        sumShakeDuration += diff;
+        numShakeSessions++;
+        averageShake = sumShakeDuration / numShakeSessions;
+        pov.updateChangeRate(averageShake / 12);
+
+    }
+
     void NotifyChange()
     {
         Toast.makeText(getApplicationContext(), Long.toString(changeRate), Toast.LENGTH_SHORT).show();
     }
-
-
-
 
 }

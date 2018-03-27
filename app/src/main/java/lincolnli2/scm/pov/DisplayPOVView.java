@@ -3,8 +3,6 @@ package lincolnli2.scm.pov;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.annotation.Nullable;
-import android.util.AttributeSet;
 import android.view.View;
 
 import java.util.Timer;
@@ -15,7 +13,7 @@ import java.util.TimerTask;
  * The custom view for displaying the POV
  */
 
-public class DisplayPOV extends View {
+public class DisplayPOVView extends View {
 
     int[] pixels;
     int[] palette;
@@ -26,23 +24,11 @@ public class DisplayPOV extends View {
     Paint p = new Paint();
     long changeRate;
 
-    public DisplayPOV(Context context) {
+    public DisplayPOVView(Context context) {
         super(context);
         t = new Timer();
         palette = context.getResources().getIntArray(R.array.palette);
 
-    }
-
-    public DisplayPOV(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        t = new Timer();
-        palette = context.getResources().getIntArray(R.array.palette);
-    }
-
-    public DisplayPOV(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        t = new Timer();
-        palette = context.getResources().getIntArray(R.array.palette);
     }
 
     void SetPixels(int[] ps) {
@@ -57,7 +43,6 @@ public class DisplayPOV extends View {
         pixel_width = h / 10;
 
 
-
         for (int y = 0; y < 10; y++) {
             p.setColor(palette[pixels[y * 10 + x]]);
             canvas.drawRect(w / 2 - pixel_width / 2, y * pixel_width, w / 2 + pixel_width / 2, (y + 1) * pixel_width, p);
@@ -66,20 +51,20 @@ public class DisplayPOV extends View {
         super.onDraw(canvas);
     }
 
+
     private void updateFrame()
     {
         x++;
         if(x>=10) x=0;
 
         //update
-        DisplayPOV.this.postInvalidate();
+        DisplayPOVView.this.postInvalidate();
     }
 
-    public void updateChangeRate(long newRate)
-    {
+    public void updateChangeRate(long newRate) {
         changeRate = newRate;
 
-        if(timerTask != null ) timerTask.cancel();
+        if (timerTask != null) timerTask.cancel();
         timerTask = new TimerTask() {
             @Override
             public void run() {
@@ -89,5 +74,4 @@ public class DisplayPOV extends View {
 
         t.schedule(timerTask, 0, changeRate);
     }
-
 }

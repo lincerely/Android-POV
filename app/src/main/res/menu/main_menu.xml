@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="wrap_content"
-    android:layout_width="wrap_content">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
     <item android:id="@+id/menu_clear"
         android:icon="@drawable/ic_action_clear"
         android:title="@string/clear"
         app:showAsAction="ifRoom"/>
-    <item android:id="@+id/menu_info"
+    <item
+        android:id="@+id/menu_saving"
+        android:icon="@drawable/ic_action_name"
+        android:title="@string/save"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_saved"
+        android:icon="@drawable/ic_action_load"
+        android:title="@string/saved" />
+    <item
+        android:id="@+id/menu_settings"
+        android:icon="@drawable/ic_action_settings"
+        android:title="@string/settings" />
+    <item
+        android:id="@+id/menu_info"
         android:icon="@drawable/ic_action_info"
         android:title="@string/about"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>

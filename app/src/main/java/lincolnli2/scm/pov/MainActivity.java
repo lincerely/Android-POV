@@ -2,19 +2,21 @@ package lincolnli2.scm.pov;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.SeekBar;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import io.paperdb.Paper;
 
@@ -25,13 +27,15 @@ import io.paperdb.Paper;
 
 public class MainActivity extends AppCompatActivity {
 
+    public final static String EXTRA_PIXELS = "pixels";
+    static final int PICK_SAVED = 1;  // The request code
     GridView gridView;
     SeekBar seekColor;
     int[] pixels;
+    ArrayList<String> savedPixels;
     int[] palette;
     int brush = 1;
-    PixelsAdapter pixelsAdapter ;
-
+    PixelsAdapter pixelsAdapter;
     int[] defaultPixels =
             {
                     0,0,0,0,0,0,0,0,0,0,
@@ -46,15 +50,17 @@ public class MainActivity extends AppCompatActivity {
                     0,0,0,0,0,0,0,0,0,0
             };
 
-    public final static String EXTRA_PIXELS = "pixels";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //load from storage
-        pixels = Paper.book().read(EXTRA_PIXELS,  defaultPixels);
+        if (pixels == null)
+            pixels = Paper.book().read(EXTRA_PIXELS, defaultPixels);
+
+        savedPixels = Paper.book().read(DisplaySavedActivity.EXTRA_SAVED_PIXELS,
+                new ArrayList<>(Arrays.asList(pixelsToString(defaultPixels))));
 
         //
         // set up pixels editor
@@ -102,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         SavePixels();
     }
 
-
     //
     // Menu
     //
@@ -122,10 +127,27 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_info:
                 About();
                 return true;
+
+            case R.id.menu_saved:
+                OpenSaved();
+                return true;
+
+            case R.id.menu_saving:
+                Save();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == PICK_SAVED) {
+            pixels = data.getExtras().getIntArray(EXTRA_PIXELS);
+            pixelsAdapter = new PixelsAdapter(this, pixels);
+            gridView.setAdapter(pixelsAdapter);
+        }
     }
 
     public void Display(View view)
@@ -165,5 +187,30 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    private void OpenSaved() {
+        Intent intent = new Intent(MainActivity.this, DisplaySavedActivity.class);
+        startActivityForResult(intent, PICK_SAVED);
+    }
 
+    private void Save() {
+        //save the current pattern to the paper database
+        String strPixels = pixelsToString(pixels);
+
+        if (savedPixels.contains(strPixels))
+            Toast.makeText(MainActivity.this, "Duplicate pattern found, save cancelled", Toast.LENGTH_SHORT).show();
+        else {
+            savedPixels.add(strPixels);
+            Paper.book().write(DisplaySavedActivity.EXTRA_SAVED_PIXELS, savedPixels);
+            Toast.makeText(MainActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // pack int array into a single String
+    private String pixelsToString(int[] ints) {
+        return Arrays.toString(ints)
+                .replace("[", "")
+                .replace("]", "")
+                .replace(",", "")
+                .replace(" ", "");
+    }
 }

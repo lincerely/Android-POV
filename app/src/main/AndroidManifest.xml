@@ -27,6 +27,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="lincolnli2.scm.pov.MainActivity" />
         </activity>
+        <activity
+            android:name=".DisplaySavedActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Saved Patterns"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/FullscreenTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="lincolnli2.scm.pov.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
