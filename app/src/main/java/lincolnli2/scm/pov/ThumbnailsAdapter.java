@@ -1,6 +1,7 @@
 package lincolnli2.scm.pov;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -48,6 +49,7 @@ public class ThumbnailsAdapter extends BaseAdapter {
         thumbnailView.SetPixels(stringToIntArray(savedPixels.get(position)));
         thumbnailView.setMinimumWidth(parent.getWidth() / 3);
         thumbnailView.setMinimumHeight(parent.getWidth() / 3);
+        thumbnailView.setForeground(ContextCompat.getDrawable(context, R.drawable.del_selector));
         return thumbnailView;
     }
 

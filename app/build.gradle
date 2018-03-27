@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "lincolnli2.scm.pov"
-        minSdkVersion 19
+        minSdkVersion 14
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -31,6 +31,4 @@ dependencies {
     compile 'io.paperdb:paperdb:2.6'
     implementation 'com.android.support:design:26.1.0'
     compile 'com.squareup:seismic:1.0.2'
-    compile 'com.android.support:preference-v7:26.1.0'
-    compile 'com.android.support:preference-v14:26.1.0'
 }

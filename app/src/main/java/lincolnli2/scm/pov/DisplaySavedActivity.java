@@ -2,6 +2,7 @@ package lincolnli2.scm.pov;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -27,9 +28,15 @@ public class DisplaySavedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_saved);
 
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle(R.string.saved_pattern);
+        ab.setSubtitle(R.string.hold_hint);
+
         gridView = findViewById(R.id.savedThumbnails);
         adapter = new ThumbnailsAdapter(this.getApplicationContext());
         gridView.setAdapter(adapter);
+
+        gridView.setEmptyView(findViewById(R.id.placeholder));
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -68,8 +75,10 @@ public class DisplaySavedActivity extends AppCompatActivity {
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 switch (item.getItemId()) {
+
                     case R.id.del_menu_btn:
                         Remove();
+                        mode.finish();
                         return true;
                     default:
                         return false;
@@ -78,7 +87,7 @@ public class DisplaySavedActivity extends AppCompatActivity {
 
             @Override
             public void onDestroyActionMode(ActionMode mode) {
-
+                mode.setSubtitle("Hold to delete");
             }
         });
     }

@@ -38,16 +38,16 @@ public class MainActivity extends AppCompatActivity {
     PixelsAdapter pixelsAdapter;
     int[] defaultPixels =
             {
-                    0,0,0,0,0,0,0,0,0,0,
-                    0,0,8,0,0,0,0,8,0,0,
-                    0,0,8,0,0,0,0,8,0,0,
-                    0,0,8,0,0,0,0,8,0,0,
-                    0,0,0,0,0,0,0,0,0,0,
-                    0,0,0,0,0,0,0,0,0,0,
-                    0,0,8,0,0,0,0,8,0,0,
-                    0,0,8,8,8,8,8,8,0,0,
-                    0,0,0,0,0,0,0,0,0,0,
-                    0,0,0,0,0,0,0,0,0,0
+                    0, 0, 0, 2, 2, 2, 2, 0, 0, 0,
+                    0, 0, 2, 2, 2, 2, 2, 2, 0, 0,
+                    0, 2, 2, 2, 2, 2, 2, 2, 2, 0,
+                    2, 2, 2, 2, 0, 0, 2, 2, 2, 2,
+                    0, 0, 0, 0, 1, 1, 0, 0, 0, 0,
+                    1, 1, 1, 0, 1, 1, 0, 1, 1, 1,
+                    1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
+                    0, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+                    0, 0, 1, 1, 1, 1, 1, 1, 0, 0,
+                    0, 0, 0, 1, 1, 1, 1, 0, 0, 0,
             };
 
     @Override
@@ -59,8 +59,12 @@ public class MainActivity extends AppCompatActivity {
         if (pixels == null)
             pixels = Paper.book().read(EXTRA_PIXELS, defaultPixels);
 
-        savedPixels = Paper.book().read(DisplaySavedActivity.EXTRA_SAVED_PIXELS,
-                new ArrayList<>(Arrays.asList(pixelsToString(defaultPixels))));
+        savedPixels = Paper.book().read(DisplaySavedActivity.EXTRA_SAVED_PIXELS, new ArrayList<String>());
+        if (savedPixels.isEmpty()) {
+            savedPixels.add(pixelsToString(defaultPixels));
+            Paper.book().write(DisplaySavedActivity.EXTRA_SAVED_PIXELS, savedPixels);
+        }
+
 
         //
         // set up pixels editor
