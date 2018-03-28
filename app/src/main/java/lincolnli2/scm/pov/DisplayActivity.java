@@ -32,7 +32,7 @@ public class DisplayActivity extends AppCompatActivity implements ShakeDetector.
         pov.SetPixels(intent.getIntArrayExtra(MainActivity.EXTRA_PIXELS));
 
         setContentView(pov);
-        pov.updateChangeRate(changeRate);
+        pov.updateAverageFrameRate(changeRate);
 
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         ShakeDetector sd = new ShakeDetector(this);
@@ -45,7 +45,7 @@ public class DisplayActivity extends AppCompatActivity implements ShakeDetector.
         if ( pov != null && keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
             if(changeRate > 5) {
                 changeRate -= 5;
-                pov.updateChangeRate(changeRate);
+                pov.updateAverageFrameRate(changeRate);
                 NotifyChange();
             }
             return true;
@@ -55,7 +55,7 @@ public class DisplayActivity extends AppCompatActivity implements ShakeDetector.
             if(changeRate < 50)
             {
                 changeRate += 5;
-                pov.updateChangeRate(changeRate);
+                pov.updateAverageFrameRate(changeRate);
                 NotifyChange();
             }
             return true;
@@ -78,7 +78,7 @@ public class DisplayActivity extends AppCompatActivity implements ShakeDetector.
         sumShakeDuration += diff;
         numShakeSessions++;
         averageShake = sumShakeDuration / numShakeSessions;
-        pov.updateChangeRate(averageShake / 12);
+        pov.updateAverageFrameRate(averageShake / 10);
 
     }
 

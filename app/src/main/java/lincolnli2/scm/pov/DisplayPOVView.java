@@ -3,10 +3,8 @@ package lincolnli2.scm.pov;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Handler;
 import android.view.View;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by lincoln on 26/2/2018.
@@ -19,16 +17,36 @@ public class DisplayPOVView extends View {
     int[] palette;
     int x = 0;
     int pixel_width = 10;
-    Timer t = null;
-    TimerTask timerTask = null;
     Paint p = new Paint();
-    long changeRate;
+    long averageFrameRate;
+    long nextFrame;
+
+    //Use handler instead of timertask
+    //ref:https://stackoverflow.com/questions/20330355/timertask-or-handler
+    Handler handler = new Handler();
+
+    Runnable updateFrame = new Runnable() {
+        @Override
+        public void run() {
+            x++;
+            if (x >= 10) x = 0;
+
+            //cal next delay
+            long offset = x / 10 * 360;
+            long nextFrame = (long) (averageFrameRate * (1.01 + Math.cos(offset)) / 2);
+
+            //update
+            DisplayPOVView.this.postInvalidate();
+
+            //next update
+            handler.postDelayed(updateFrame, nextFrame);
+        }
+    };
 
     public DisplayPOVView(Context context) {
         super(context);
-        t = new Timer();
         palette = context.getResources().getIntArray(R.array.palette);
-
+        handler.post(updateFrame);
     }
 
     void SetPixels(int[] ps) {
@@ -42,7 +60,6 @@ public class DisplayPOVView extends View {
         int w = canvas.getWidth();
         pixel_width = h / 10;
 
-
         for (int y = 0; y < 10; y++) {
             p.setColor(palette[pixels[y * 10 + x]]);
             canvas.drawRect(w / 2 - pixel_width / 2, y * pixel_width, w / 2 + pixel_width / 2, (y + 1) * pixel_width, p);
@@ -51,27 +68,12 @@ public class DisplayPOVView extends View {
         super.onDraw(canvas);
     }
 
+    public void updateAverageFrameRate(long newRate) {
+        averageFrameRate = newRate;
+        x = 9;
 
-    private void updateFrame()
-    {
-        x++;
-        if(x>=10) x=0;
+        if (handler != null) handler.removeCallbacksAndMessages(null);
+        handler.postDelayed(updateFrame, nextFrame);
 
-        //update
-        DisplayPOVView.this.postInvalidate();
-    }
-
-    public void updateChangeRate(long newRate) {
-        changeRate = newRate;
-
-        if (timerTask != null) timerTask.cancel();
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                updateFrame();
-            }
-        };
-
-        t.schedule(timerTask, 0, changeRate);
     }
 }
