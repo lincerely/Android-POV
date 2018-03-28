@@ -19,7 +19,9 @@ public class DisplayPOVView extends View {
     int pixel_width = 10;
     Paint p = new Paint();
     long averageFrameRate;
+    long constantFrameRate = 25;
     long nextFrame;
+    boolean isCorrection = true;
 
     //Use handler instead of timertask
     //ref:https://stackoverflow.com/questions/20330355/timertask-or-handler
@@ -39,7 +41,8 @@ public class DisplayPOVView extends View {
             DisplayPOVView.this.postInvalidate();
 
             //next update
-            handler.postDelayed(updateFrame, nextFrame);
+            if (isCorrection) handler.postDelayed(updateFrame, nextFrame);
+            else handler.postDelayed(updateFrame, constantFrameRate);
         }
     };
 
@@ -69,11 +72,16 @@ public class DisplayPOVView extends View {
     }
 
     public void updateAverageFrameRate(long newRate) {
+        constantFrameRate = newRate;
         averageFrameRate = newRate;
         x = 9;
 
         if (handler != null) handler.removeCallbacksAndMessages(null);
         handler.postDelayed(updateFrame, nextFrame);
 
+    }
+
+    public void SetCorrection(Boolean b) {
+        isCorrection = b;
     }
 }

@@ -3,9 +3,15 @@ package lincolnli2.scm.pov;
 import android.content.Intent;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.squareup.seismic.ShakeDetector;
@@ -33,6 +39,9 @@ public class DisplayActivity extends AppCompatActivity implements ShakeDetector.
 
         setContentView(pov);
         pov.updateAverageFrameRate(changeRate);
+
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle("Shake to display");
 
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         ShakeDetector sd = new ShakeDetector(this);
@@ -82,9 +91,32 @@ public class DisplayActivity extends AppCompatActivity implements ShakeDetector.
 
     }
 
+    //
+    // Menu
+    //
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_display_pov, menu);
+
+        final MenuItem item = menu.findItem(R.id.correction_switch);
+        final Switch aSwitch = (Switch) item.getActionView();
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ToggleCorrection(isChecked);
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
     void NotifyChange()
     {
         Toast.makeText(getApplicationContext(), Long.toString(changeRate), Toast.LENGTH_SHORT).show();
+    }
+
+    void ToggleCorrection(boolean isChecked) {
+        pov.SetCorrection(isChecked);
     }
 
 }

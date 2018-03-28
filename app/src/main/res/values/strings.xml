@@ -15,4 +15,6 @@
     <string name="delete">Delete</string>
     <string name="saved_pattern">Saved Patterns</string>
     <string name="hold_hint">Hold to delete</string>
+    <string name="toggle_correction">Toggle Correction</string>
+    <string name="correction">Correction</string>
 </resources>

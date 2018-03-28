@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
+    android:theme="@android:style/Theme.Material"
     tools:context="lincolnli2.scm.pov.DisplayActivity">
 
     <view
